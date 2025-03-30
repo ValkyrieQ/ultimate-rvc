@@ -910,7 +910,6 @@ def run_pipeline(
     n_semitones: int = 0,
     f0_methods: Sequence[F0Method] | None = None,
     index_rate: float = 0.5,
-    filter_radius: int = 3,
     rms_mix_rate: float = 0.25,
     protect_rate: float = 0.33,
     hop_length: int = 128,
@@ -955,8 +954,6 @@ def run_pipeline(
         conversion. If None, the method used is rmvpe.
     index_rate : float, default=0.5
         The influence of the index file on the vocal conversion.
-    filter_radius : int, default=3
-        The filter radius to use for the vocal conversion.
     rms_mix_rate : float, default=0.25
         The blending rate of the volume envelope of the converted
         vocals.
@@ -1061,7 +1058,6 @@ def run_pipeline(
         n_semitones=n_semitones,
         f0_methods=f0_methods,
         index_rate=index_rate,
-        filter_radius=filter_radius,
         rms_mix_rate=rms_mix_rate,
         protect_rate=protect_rate,
         hop_length=hop_length,

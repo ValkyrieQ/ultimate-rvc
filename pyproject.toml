@@ -185,9 +185,7 @@ section-order = [
     "torchcrepe",
     "faiss",
     "tensorboard",
-    "torchfcpe",
     "local_attention",
-    "libf0",
     "einops",
 ]
 "audio" = [

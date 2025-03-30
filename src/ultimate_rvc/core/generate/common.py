@@ -267,7 +267,6 @@ def convert(
     n_semitones: int = 0,
     f0_methods: Sequence[F0Method] | None = None,
     index_rate: float = 0.5,
-    filter_radius: int = 3,
     rms_mix_rate: float = 0.25,
     protect_rate: float = 0.33,
     hop_length: int = 128,
@@ -302,8 +301,6 @@ def convert(
         used is rmvpe.
     index_rate : float, default=0.5
         The influence of the index file on the voice conversion.
-    filter_radius : int, default=3
-        The filter radius to use for the voice conversion.
     rms_mix_rate : float, default=0.25
         The blending rate of the volume envelope of the converted
         audio.
@@ -381,7 +378,6 @@ def convert(
         n_semitones=n_semitones,
         f0_methods=sorted(f0_methods_set),
         index_rate=index_rate,
-        filter_radius=filter_radius,
         rms_mix_rate=rms_mix_rate,
         protect_rate=protect_rate,
         hop_length=hop_length,
@@ -426,7 +422,6 @@ def convert(
             split_audio=split_audio,
             f0_autotune=autotune_audio,
             f0_autotune_strength=autotune_strength,
-            filter_radius=filter_radius,
             embedder_model=embedder_model,
             embedder_model_custom=(
                 str(custom_embedder_model_path)

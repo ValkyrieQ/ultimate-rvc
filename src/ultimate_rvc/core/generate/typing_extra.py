@@ -122,8 +122,6 @@ class RVCAudioMetaData(BaseModel):
         The methods used for pitch extraction.
     index_rate : float
         The influence of the index file on the voice conversion.
-    filter_radius : int
-        The filter radius used for the voice conversion.
     rms_mix_rate : float
         The blending rate of the volume envelope of the converted
         audio.
@@ -159,7 +157,6 @@ class RVCAudioMetaData(BaseModel):
     n_semitones: int
     f0_methods: list[F0Method]
     index_rate: float
-    filter_radius: int
     rms_mix_rate: float
     protect_rate: float
     hop_length: int
