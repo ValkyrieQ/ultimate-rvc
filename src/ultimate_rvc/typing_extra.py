@@ -92,7 +92,6 @@ class TrainingSampleRate(StrEnum):
 
     HZ_32K = "32000"
     HZ_40K = "40000"
-    HZ_44K = "44100"
     HZ_48K = "48000"
 
 

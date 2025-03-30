@@ -190,19 +190,6 @@ def convert_voice(
             ),
         ),
     ] = 0.5,
-    filter_radius: Annotated[
-        int,
-        typer.Option(
-            min=0,
-            max=7,
-            rich_help_panel=PanelName.VOICE_SYNTHESIS_OPTIONS,
-            help=(
-                "A number which, if greater than 3, applies median filtering to"
-                " extracted pitch values. Can help reduce breathiness in the converted"
-                " voice."
-            ),
-        ),
-    ] = 3,
     rms_mix_rate: Annotated[
         float,
         typer.Option(
@@ -336,7 +323,6 @@ def convert_voice(
         n_semitones=n_semitones,
         f0_methods=f0_method,
         index_rate=index_rate,
-        filter_radius=filter_radius,
         rms_mix_rate=rms_mix_rate,
         protect_rate=protect_rate,
         hop_length=hop_length,

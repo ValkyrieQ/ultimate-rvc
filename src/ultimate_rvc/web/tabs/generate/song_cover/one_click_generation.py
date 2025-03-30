@@ -170,20 +170,7 @@ def render(
                         info=(
                             "Increase to bias the conversion towards the accent of the"
                             " voice model. Decrease to potentially reduce artifacts"
-                            " coming from the voice model."
-                        ),
-                        show_reset_button=False,
-                    )
-                    filter_radius = gr.Slider(
-                        0,
-                        7,
-                        value=3,
-                        step=1,
-                        label="Filter radius",
-                        info=(
-                            "If >=3: apply median filtering to extracted pitch values."
-                            " Can help reduce breathiness in the converted"
-                            " vocals.<br><br>"
+                            " coming from the voice model.<br><br><br>"
                         ),
                         show_reset_button=False,
                     )
@@ -530,7 +517,6 @@ def render(
                 n_semitones,
                 f0_methods,
                 index_rate,
-                filter_radius,
                 rms_mix_rate,
                 protect_rate,
                 hop_length,
@@ -576,7 +562,6 @@ def render(
                 0,
                 F0Method.RMVPE,
                 0.5,
-                3,
                 0.25,
                 0.33,
                 128,
@@ -604,7 +589,6 @@ def render(
                 n_semitones,
                 f0_methods,
                 index_rate,
-                filter_radius,
                 rms_mix_rate,
                 protect_rate,
                 hop_length,

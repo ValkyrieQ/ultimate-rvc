@@ -404,8 +404,9 @@
 
 ### general
 
-* fix problem with not being able to rename default "Options" panel in typer
-  * the panel where "help" and other built in options are put
+* fix problem with not being able to rename default "Options" panel in typer [DIFFICULT TO IMPLEMENT]
+  * the panel where "help" and other built in options are put 
+  * seems to not be possible with typer so report?
 
 ### Add remaining CLI interfaces
 
@@ -417,7 +418,7 @@
 
 * add support for python 3.13.
 * update numpy to latest
-* need to wait for uv to make it easy to install package with torch dependency
+* need to wait for uv to make it easy to install package with torch dependency [DIFFICULT TO IMPLEMENT]
   * also it is still necessary to install pytorch first as it is not on pypi index
 
 * need to make project version (in `pyproject.toml`) dynamic so that it is updated automatically when a new release is made

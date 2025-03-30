@@ -54,9 +54,12 @@ logger = logging.getLogger(__name__)
 torch.backends.cudnn.deterministic = False
 torch.backends.cudnn.benchmark = True
 torch.multiprocessing.set_start_method("spawn", force=True)
+os.environ["USE_LIBUV"] = "0" if sys.platform == "win32" else "1"
 
 randomized = True
-optimizer = "RAdam"  # "AdamW"
+optimizer = "AdamW"  # "RAdam"
+d_lr_coeff = 1.0
+g_lr_coeff = 1.0
 global_step = 0
 lowest_g_value = {"value": float("inf"), "epoch": 0}
 lowest_d_value = {"value": float("inf"), "epoch": 0}
@@ -64,8 +67,8 @@ consecutive_increases_gen = 0
 consecutive_increases_disc = 0
 
 avg_losses = {
-    "gen_loss_queue": deque(maxlen=10),
-    "disc_loss_queue": deque(maxlen=10),
+    "grad_d_50": deque(maxlen=50),
+    "grad_g_50": deque(maxlen=50),
     "disc_loss_50": deque(maxlen=50),
     "fm_loss_50": deque(maxlen=50),
     "kl_loss_50": deque(maxlen=50),
@@ -314,8 +317,8 @@ def run(
 
     # Initialize distributed training environment for child node.
     dist.init_process_group(
-        backend="gloo",
-        init_method="env://?use_libuv=0",
+        backend="gloo" if sys.platform == "win32" or device.type != "cuda" else "nccl",
+        init_method="env://",
         world_size=n_gpus if device.type == "cuda" else 1,
         rank=rank if device.type == "cuda" else 0,
     )
@@ -413,8 +416,8 @@ def run(
         net_g = net_g.cuda(device_id)
         net_d = net_d.cuda(device_id)
     else:
-        net_g.to(device)
-        net_d.to(device)
+        net_g = net_g.to(device)
+        net_d = net_d.to(device)
 
     if optimizer == "AdamW":
         optimizer = torch.optim.AdamW
@@ -423,13 +426,13 @@ def run(
 
     optim_g = optimizer(
         net_g.parameters(),
-        config.train.learning_rate,
+        config.train.learning_rate * g_lr_coeff,
         betas=config.train.betas,
         eps=config.train.eps,
     )
     optim_d = optimizer(
         net_d.parameters(),
-        config.train.learning_rate,
+        config.train.learning_rate * d_lr_coeff,
         betas=config.train.betas,
         eps=config.train.eps,
     )
@@ -634,9 +637,6 @@ def train_and_evaluate(
     """Train and evaluates the model for one epoch."""
     global global_step, lowest_g_value, lowest_d_value, consecutive_increases_gen, consecutive_increases_disc
 
-    epoch_disc_sum = 0.0
-    epoch_gen_sum = 0.0
-
     model_add = []
     checkpoint_idxs = []
     done = False
@@ -711,14 +711,10 @@ def train_and_evaluate(
             y_d_hat_r, y_d_hat_g, _, _ = net_d(wave, y_hat.detach())
             loss_disc, _, _ = discriminator_loss(y_d_hat_r, y_d_hat_g)
             # Discriminator backward and update
-            epoch_disc_sum += loss_disc.item()
             global_disc_loss[epoch - 1] += loss_disc.item()
             optim_d.zero_grad()
             loss_disc.backward()
-            grad_norm_d = torch.nn.utils.clip_grad_norm_(
-                net_d.parameters(),
-                max_norm=1000.0,
-            )
+            grad_norm_d = commons.grad_norm(net_d.parameters())
             optim_d.step()
 
             # Generator backward and update
@@ -728,19 +724,17 @@ def train_and_evaluate(
             loss_fm = feature_loss(fmap_r, fmap_g)
             loss_gen, _ = generator_loss(y_d_hat_g)
             loss_gen_all = loss_gen + loss_fm + loss_mel + loss_kl
-            epoch_gen_sum += loss_gen_all.item()
             global_gen_loss[epoch - 1] += loss_gen_all.item()
             optim_g.zero_grad()
             loss_gen_all.backward()
-            grad_norm_g = torch.nn.utils.clip_grad_norm_(
-                net_g.parameters(),
-                max_norm=1000.0,
-            )
+            grad_norm_g = commons.grad_norm(net_g.parameters())
             optim_g.step()
 
             global_step += 1
 
             # queue for rolling losses over 50 steps
+            avg_losses["grad_d_50"].append(grad_norm_d)
+            avg_losses["grad_g_50"].append(grad_norm_g)
             avg_losses["disc_loss_50"].append(loss_disc.detach())
             avg_losses["fm_loss_50"].append(loss_fm.detach())
             avg_losses["kl_loss_50"].append(loss_kl.detach())
@@ -750,6 +744,12 @@ def train_and_evaluate(
             if rank == 0 and global_step % 50 == 0:
                 # logging rolling averages
                 scalar_dict = {
+                    "grad_avg_50/norm_d": (
+                        sum(avg_losses["grad_d_50"]) / len(avg_losses["grad_d_50"])
+                    ),
+                    "grad_avg_50/norm_g": (
+                        sum(avg_losses["grad_g_50"]) / len(avg_losses["grad_g_50"])
+                    ),
                     "loss_avg_50/d/total": torch.mean(
                         torch.stack(list(avg_losses["disc_loss_50"])),
                     ),
@@ -782,8 +782,6 @@ def train_and_evaluate(
         torch.cuda.empty_cache()
     # Logging and checkpointing
     if rank == 0:
-        avg_losses["disc_loss_queue"].append(epoch_disc_sum / len(train_loader))
-        avg_losses["gen_loss_queue"].append(epoch_gen_sum / len(train_loader))
         avg_global_disc_loss = global_disc_loss[epoch - 1] / len(train_loader.dataset)
         avg_global_gen_loss = global_gen_loss[epoch - 1] / len(train_loader.dataset)
 
@@ -848,13 +846,11 @@ def train_and_evaluate(
             "loss/g/total": loss_gen_all,
             "loss/d/total": loss_disc,
             "learning_rate": lr,
-            "grad/norm_d": grad_norm_d.item(),
-            "grad/norm_g": grad_norm_g.item(),
+            "grad/norm_d": grad_norm_d,
+            "grad/norm_g": grad_norm_g,
             "loss/g/fm": loss_fm,
             "loss/g/mel": loss_mel,
             "loss/g/kl": loss_kl,
-            "loss_avg_epoch/disc": np.mean(avg_losses["disc_loss_queue"]),
-            "loss_avg_epoch/gen": np.mean(avg_losses["gen_loss_queue"]),
         }
 
         image_dict = {

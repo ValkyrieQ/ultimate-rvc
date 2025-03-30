@@ -18,9 +18,9 @@ import librosa
 now_dir = os.getcwd()
 sys.path.append(now_dir)
 
-import logging
-
 import lazy_loader as lazy
+
+import logging
 
 from ultimate_rvc.common import RVC_MODELS_DIR
 from ultimate_rvc.rvc.lib.predictors.FCPE import FCPEF0Predictor
@@ -361,7 +361,6 @@ class Pipeline:
         p_len,
         pitch,
         f0_methods,
-        filter_radius,
         hop_length,
         f0_autotune,
         f0_autotune_strength,
@@ -376,7 +375,6 @@ class Pipeline:
             p_len: Desired length of the F0 output.
             pitch: Key to adjust the pitch of the F0 contour.
             f0_methods: list of methods to use for F0 estimation (e.g., "[crepe]").
-            filter_radius: Radius for median filtering the F0 contour.
             hop_length: Hop length for F0 estimation methods.
             f0_autotune: Whether to apply autotune to the F0 contour.
             inp_f0: Optional input F0 contour to use instead of estimating.
@@ -538,7 +536,6 @@ class Pipeline:
         file_index,
         index_rate,
         pitch_guidance,
-        filter_radius,
         volume_envelope,
         version,
         protect,
@@ -561,7 +558,6 @@ class Pipeline:
             file_index: Path to the FAISS index file for speaker embedding retrieval.
             index_rate: Blending rate for speaker embedding retrieval.
             pitch_guidance: Whether to use pitch guidance during voice conversion.
-            filter_radius: Radius for median filtering the F0 contour.
             tgt_sr: Target sampling rate for the output audio.
             resample_sr: Resampling rate for the output audio.
             volume_envelope: Blending rate for adjusting the RMS level of the output audio.
@@ -621,7 +617,6 @@ class Pipeline:
                 p_len,
                 pitch,
                 f0_methods,
-                filter_radius,
                 hop_length,
                 f0_autotune,
                 f0_autotune_strength,
