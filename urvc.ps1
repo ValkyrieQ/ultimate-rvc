@@ -62,6 +62,7 @@ param (
 
 $uvPath = "$(Get-location)\uv"
 $venvPath="$uvPath\.venv"
+$urvcAccelerator = $env:URVC_ACCELERATOR ?? "cuda"
 
 $env:UV_UNMANAGED_INSTALL = $uvPath
 $env:UV_PYTHON_INSTALL_DIR = "$uvPath\python"
@@ -82,7 +83,7 @@ function Main {
     switch ($Command) {
         "install" {
             Invoke-RestMethod https://astral.sh/uv/0.6.3/install.ps1 | Invoke-Expression
-            uv run ./src/ultimate_rvc/core/main.py
+            uv run --extra $urvcAccelerator ./src/ultimate_rvc/core/main.py
         }
         "update" {
             git pull
@@ -101,15 +102,15 @@ function Main {
         }
         "run" {
             Assert-Dependencies
-            uv run ./src/ultimate_rvc/web/main.py @Arguments
+            uv run --extra $urvcAccelerator ./src/ultimate_rvc/web/main.py @Arguments
         }
         "dev" {
             Assert-Dependencies
-            uv run gradio ./src/ultimate_rvc/web/main.py --demo-name app
+            uv run --extra $urvcAccelerator gradio ./src/ultimate_rvc/web/main.py --demo-name app
         }
         "cli" {
             Assert-Dependencies
-            uv run ./src/ultimate_rvc/cli/main.py @Arguments
+            uv run --extra $urvcAccelerator ./src/ultimate_rvc/cli/main.py @Arguments
         }
         "docs" {
             Assert-Dependencies
