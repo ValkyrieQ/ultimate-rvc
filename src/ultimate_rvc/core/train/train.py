@@ -162,7 +162,7 @@ def run_training(
     gpu_ids: set[int] | None = None,
     preload_dataset: bool = False,
     reduce_memory_usage: bool = False,
-) -> None:
+) -> list[str] | None:
     """
 
     Train a voice model using its associated preprocessed dataset and
@@ -243,6 +243,13 @@ def run_training(
         GPUs with limited memory (e.g., <6GB VRAM) or when training with
         a batch size larger than what your GPU can normally accommodate.
 
+    Returns
+    -------
+    list[str] | None
+        A list containing the paths to the best weights file and the
+        index file for the trained voice model, if they exist.
+        Otherwise, None.
+
     Raises
     ------
     ModelAsssociatedEntityNotFoundError
@@ -312,7 +319,7 @@ def run_training(
     model_file = model_path / f"{model_name}_best.pth"
 
     if not model_file.is_file():
-        return
+        return None
 
     from ultimate_rvc.rvc.train.process.extract_index import (  # noqa: PLC0415
         main as extract_index_main,
@@ -321,33 +328,11 @@ def run_training(
     extract_index_main(str(model_path), index_algorithm)
 
     index_file = model_path / f"{model_name}.index"
-    if upload_model_path and model_file.is_file() and index_file.is_file():
-        copy_files_to_new_dir([index_file, model_file], upload_model_path)
 
-
-def get_trained_model_files(model_name: str) -> list[str] | None:
-    """
-    Get the best weights file and the index file for a trained voice
-    model, if they exist.
-
-    Parameters
-    ----------
-    model_name : str
-        The name of the trained voice model.
-
-    Returns
-    -------
-    list[str] | None
-        A list containing the paths to the best weights file and the
-        index file for the trained voice model, if they exist.
-        Otherwise, None.
-
-    """
-    model_path = TRAINING_MODELS_DIR / model_name
-    model_file = model_path / f"{model_name}_best.pth"
-    index_file = model_path / f"{model_name}.index"
-    if not model_file.is_file() or not index_file.is_file():
+    if not index_file.is_file():
         return None
+    if upload_model_path:
+        copy_files_to_new_dir([index_file, model_file], upload_model_path)
     return [str(model_file), str(index_file)]
 
 

@@ -15,6 +15,7 @@ from pathlib import Path
 from ultimate_rvc.common import (
     CUSTOM_EMBEDDER_MODELS_DIR,
     CUSTOM_PRETRAINED_MODELS_DIR,
+    PRETRAINED_MODELS_DIR,
     TRAINING_MODELS_DIR,
     VOICE_MODELS_DIR,
 )
@@ -104,7 +105,7 @@ def get_custom_pretrained_model_names() -> list[str]:
         A list of the names of all saved custom pretrained models.
 
     """
-    return get_items(CUSTOM_PRETRAINED_MODELS_DIR, exclude=".json")
+    return get_items(CUSTOM_PRETRAINED_MODELS_DIR)
 
 
 def get_training_model_names() -> list[str]:
@@ -225,8 +226,8 @@ def get_pretrained_metadata() -> PretrainedModelMetaDataTable:
         download.
 
     """
-    CUSTOM_PRETRAINED_MODELS_DIR.mkdir(parents=True, exist_ok=True)
-    pretrained_metadata_path = CUSTOM_PRETRAINED_MODELS_DIR / "pretrains.json"
+    PRETRAINED_MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    pretrained_metadata_path = PRETRAINED_MODELS_DIR / "custom_pretrains.json"
     if pretrained_metadata_path.is_file():
         pretrained_metadata_dict = json_load(pretrained_metadata_path)
         pretrained_metadata = PretrainedModelMetaDataTable.model_validate(
@@ -261,43 +262,6 @@ def get_pretrained_metadata() -> PretrainedModelMetaDataTable:
                 pretrained_metadata_dict,
             )
     return pretrained_metadata
-
-
-def get_available_pretrained_model_names() -> list[str]:
-    """
-    Get the names of all pretrained models available for download.
-
-    Returns
-    -------
-    list[str]
-        The names of all pretrained models available for download.
-
-    """
-    return get_pretrained_metadata().keys()
-
-
-def get_available_pretrained_sample_rates(name: str) -> list[PretrainedSampleRate]:
-    """
-    Get the samples rates for which instances of the pretrained model
-    with the provided name are available for download.
-
-    Parameters
-    ----------
-    name : str
-        The name of the pretrained model for which to get available
-        sample rates.
-
-    Returns
-    -------
-    list[PretrainedSampleRate]
-        The sample rates for which there are instances of the pretrained
-        model with the provided name available for download.
-
-    """
-    pretrained_metadata = get_pretrained_metadata()
-    pretrained_sample_rates = pretrained_metadata[name]
-
-    return pretrained_sample_rates.keys()
 
 
 def _extract_voice_model(
@@ -453,21 +417,18 @@ def download_pretrained_model(name: str, sample_rate: PretrainedSampleRate) -> N
         not available for download.
 
     """
+    CUSTOM_PRETRAINED_MODELS_DIR.mkdir(parents=True, exist_ok=True)
     model_path = CUSTOM_PRETRAINED_MODELS_DIR / f"{name} {sample_rate}"
     if model_path.is_dir():
         raise PretrainedModelExistsError(name, sample_rate)
 
     pretrained_metadata = get_pretrained_metadata()
 
-    available_model_names = pretrained_metadata.keys()
-    if name not in available_model_names:
+    if name not in pretrained_metadata.names:
         raise PretrainedModelNotAvailableError(name)
-
-    model_metadata = pretrained_metadata[name]
-    available_sample_rates = model_metadata.keys()
-    if sample_rate not in available_sample_rates:
+    if sample_rate not in pretrained_metadata.get_sample_rates(name):
         raise PretrainedModelNotAvailableError(name, sample_rate)
-    paths = model_metadata[sample_rate]
+    paths = pretrained_metadata[name][sample_rate]
 
     d_url = f"https://huggingface.co/{paths.D}"
     g_url = f"https://huggingface.co/{paths.G}"

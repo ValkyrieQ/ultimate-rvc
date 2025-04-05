@@ -86,7 +86,7 @@ def get_audio_datasets() -> list[str]:
         A list of the paths of all saved audio datasets.
 
     """
-    return get_items(TRAINING_AUDIO_DIR, only_name=False)
+    return get_items(TRAINING_AUDIO_DIR, only_stem=False)
 
 
 def delete_audio(

@@ -10,13 +10,17 @@ from typing import Any, TypedDict
 from collections.abc import Callable, Sequence
 from enum import StrEnum, auto
 
+type AnyCallable = Callable[..., Any]
+
 type DropdownChoices = (
     Sequence[str | int | float | tuple[str, str | int | float]] | None
 )
+type BaseDropdownValue = str | int | float | Sequence[str | int | float] | None
+type DropdownValue = BaseDropdownValue | AnyCallable
 
-type DropdownValue = (
-    str | int | float | Sequence[str | int | float] | Callable[..., Any] | None
-)
+type RadioChoices = DropdownChoices
+type BaseRadioValue = str | int | float | None
+type RadioValue = BaseRadioValue | AnyCallable
 
 
 class ConcurrencyId(StrEnum):
@@ -38,6 +42,26 @@ class SpeechSourceType(StrEnum):
 
     TEXT = "Text"
     LOCAL_FILE = "Local file"
+
+
+class SongTransferOption(StrEnum):
+    """Enumeration of possible song transfer options."""
+
+    STEP_1_AUDIO = "Step 1: audio"
+    STEP_2_VOCALS = "Step 2: vocals"
+    STEP_3_VOCALS = "Step 3: vocals"
+    STEP_4_INSTRUMENTALS = "Step 4: instrumentals"
+    STEP_4_BACKUP_VOCALS = "Step 4: backup vocals"
+    STEP_5_MAIN_VOCALS = "Step 5: main vocals"
+    STEP_5_INSTRUMENTALS = "Step 5: instrumentals"
+    STEP_5_BACKUP_VOCALS = "Step 5: backup vocals"
+
+
+class SpeechTransferOption(StrEnum):
+    """Enumeration of possible speech transfer options."""
+
+    STEP_2_SPEECH = "Step 2: speech"
+    STEP_3_SPEECH = "Step 3: speech"
 
 
 class ComponentVisibilityKwArgs(TypedDict, total=False):
@@ -71,6 +95,20 @@ class UpdateDropdownKwArgs(TypedDict, total=False):
     """
 
     choices: DropdownChoices
+    value: DropdownValue
+
+
+class DropdownValueKwArgs(TypedDict, total=False):
+    """
+    Keyword arguments for setting the value of a dropdown component.
+
+    Attributes
+    ----------
+    value : DropdownValue
+        The updated value for the dropdown component.
+
+    """
+
     value: DropdownValue
 
 

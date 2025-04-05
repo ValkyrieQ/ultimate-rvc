@@ -279,6 +279,7 @@ def convert(
     custom_embedder_model: str | None = None,
     sid: int = 0,
     content_type: RVCContentType = RVCContentType.AUDIO,
+    make_directory: bool = False,
 ) -> Path:
     """
     Convert an audio track using an RVC model.
@@ -329,6 +330,9 @@ def convert(
     content_type : RVCContentType, default=RVCContentType.AUDIO
         The type of content to convert. Determines what is shown in
         display mesages and saved file names.
+    make_directory : bool, default=False
+        Whether to create the directory where the converted audio
+        track will be saved if it does not exist.
 
     Returns
     -------
@@ -350,6 +354,8 @@ def convert(
             track_entity = Entity.AUDIO_TRACK
             directory_entity = Entity.DIRECTORY
     audio_path = validate_audio_file_exists(audio_track, track_entity)
+    if make_directory:
+        Path(directory).mkdir(parents=True, exist_ok=True)
     directory_path = validate_audio_dir_exists(directory, directory_entity)
     validate_model(model_name, Entity.VOICE_MODEL)
     custom_embedder_model_path = None

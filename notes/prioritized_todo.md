@@ -7,19 +7,6 @@
       * Add Support for changing theme in app?
   * there should be a button to apply settings which will reload the app with the new settings
 
-* Feature request: Set default values.
- * Having to adjust the values every time the application is started can be a bit tedious, adding a feature to set default values that will be set when starting would be nice, or perhaps even the ability to save per voice settings.
- * can look at Automatic1111 for inspiration on how to do this
- * combine with:
-    * save default values for options for song generation in an `SongCoverOptionDefault` enum.
-    * then reference this enum across the two tabs
-    * and also use `list[SongCoverOptionDefault]` as input to reset settings click event listener in single click generation tab.
-* extension of the prior point:
-  * improve modularation of frontend code by providing a dict mapping from gradio component names to all their initialization parameters. 
-    * should be a typed dict or pydantic base model for typing
-    * perhaps also have a field with the instantiated component? will be null to begin with
-  * perhaps also experiment with saving actual instantiated components in a central module and importing them if possible
-
 * move all post processing from vocal conversion step to postprocessing step
   * this includes all the post-processing pedal effects from pedalboard but also the autotune effect that is implemented as part of vocal converson currently
 

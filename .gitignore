@@ -1,7 +1,7 @@
 # Ultimate RVC project
 audio/*
 models/*
-
+config/*
 temp/*
 uv/*
 uv.lock

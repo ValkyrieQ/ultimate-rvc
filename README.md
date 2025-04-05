@@ -23,6 +23,7 @@ Ultimate RVC is under constant development and testing, but you can try it out r
 * "multi-step" generation tabs: Here you can try out each step of a given generation pipeline in isolation. For example, if you already have extracted vocals available and only want to convert these using your voice model, then you can do that in a dedicated "multi-step" tab for song cover generation. Besides, these "multi-step" generation tabs are also useful for experimenting with settings for each step in a given generation pipeline.
 * Lots of visual and performance improvements resulting from updating from Gradio 3 to Gradio 5 and from python 3.9 to python 3.12
 * A redistributable package on PyPI, which allows you to easily access the Ultimate RVC project from any python 3.12 environment.
+* Support for saving and loading of custom configurations for the Ultimate RVC web application. This allows you to easily switch between different configurations without having to manually change settings each time.
 
 ## Online Platforms
 
@@ -158,9 +159,11 @@ The behaviour of the Ultimate RVC project can be customized via a number of envi
 * `URVC_MODELS_DIR`: The directory in which models will be stored. If not set, models will be stored in a `models` directory in the current working directory.
 * `URVC_AUDIO_DIR`: The directory in which audio files will be stored. If not set, audio files will be stored in an `audio` directory in the current working directory.
 * `URVC_TEMP_DIR`: The directory in which temporary files will be stored. If not set, temporary files will be stored in a `temp` directory in the current working directory.
+* `URVC_CONFIG_DIR`: The directory in which configuration files will be stored. If not set, configuration files will be stored in a `configs` directory in the current working directory.
 * `URVC_VOICE_MODELS_DIR`: The directory in which voice models will be stored. If not set, voice models will be stored in a `voice_models` subdirectory of the `URVC_MODELS_DIR` directory.
 * `YT_COOKIEFILE`: The path to a file containing cookies to use when downloading audio from YouTube via the web UI. If not set, no cookies will be used.
 * `URVC_ACCELERATOR`: The type of hardware accelerator to use when running Ultimate RVC directly via the shell scripts in this repository. Currently supported options are `cuda` and `rocm`, with `cuda` being the default. Note that `rocm` is not supported on Windows and experimental on linux.
+* `URVC_CONFIG`: The name of a configuration with custom values for settings to load when starting the Ultimate RVC web application. If not set, the default configuration for Ultimate RVC will be used. The configuration should be located in the `configs` directory of the Ultimate RVC project. If it does not exist, an error will be raised.
 
 ## Terms of Use
 
