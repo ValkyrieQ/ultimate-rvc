@@ -62,7 +62,8 @@ param (
 
 $uvPath = "$(Get-location)\uv"
 $venvPath="$uvPath\.venv"
-$urvcAccelerator = $env:URVC_ACCELERATOR ?? "cuda"
+$urvcAccelerator = $env:URVC_ACCELERATOR
+if (-not $urvcAccelerator) { $urvcAccelerator = "cuda" }
 
 $env:UV_UNMANAGED_INSTALL = $uvPath
 $env:UV_PYTHON_INSTALL_DIR = "$uvPath\python"
