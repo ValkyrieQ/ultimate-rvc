@@ -7,13 +7,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar
 
+from functools import partial
+
 import gradio as gr
 
 from ultimate_rvc.core.exceptions import NotProvidedError
+from ultimate_rvc.core.manage.config import load_config, save_config
+from ultimate_rvc.web.config.main import TotalConfig
+from ultimate_rvc.web.typing_extra import SongTransferOption, SpeechTransferOption
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
+    from gradio.components import Component
+    from gradio.events import Dependency
+
+    from ultimate_rvc.web.config.component import AudioConfig
     from ultimate_rvc.web.typing_extra import (
         ComponentVisibilityKwArgs,
         DropdownChoices,
@@ -27,6 +36,7 @@ PROGRESS_BAR = gr.Progress()
 
 T = TypeVar("T")
 P = ParamSpec("P")
+U = TypeVar("U", bound=SongTransferOption | SpeechTransferOption)
 
 
 def exception_harness(  # noqa: UP047
@@ -197,7 +207,7 @@ def toggle_visibility(
     value: T,
     targets: set[T],
     default: str | float | None = None,
-    update_default: bool = True,
+    update_default: bool = False,
 ) -> dict[str, Any]:
     """
     Toggle the visibility of a component based on equality of
@@ -211,7 +221,7 @@ def toggle_visibility(
         The set of targets to compare the value against.
     default : str | float | None, optional
         Default value for the component.
-    update_default : bool, default=True
+    update_default : bool, default=False
         Whether to update the default value of the component.
 
     Returns
@@ -475,3 +485,174 @@ def update_audio(
             return gr.Audio(**update_args)
         case _:
             return tuple(gr.Audio(**update_args) for update_args in update_args_list)
+
+
+def render_transfer_component(
+    value: list[U],
+    label_prefix: str,
+    option_type: type[U],
+) -> gr.Dropdown:
+    """
+    Render a dropdown for transferring tracks.
+
+    Parameters
+    ----------
+    value : list[U]
+        The default selected values for the dropdown.
+    label_prefix : str
+        The prefix for the dropdown label.
+    option_type : type[U]
+        The type of the transfer options.
+
+    Returns
+    -------
+    gr.Dropdown
+        A dropdown component for transferring tracks.
+
+    """
+    return gr.Dropdown(
+        choices=list(option_type),
+        label=f"{label_prefix} destination",
+        info=(
+            "Select the input track(s) to transfer the"
+            f" {label_prefix.lower()} to when the 'Transfer"
+            f" {label_prefix.lower()}' button is clicked."
+        ),
+        type="index",
+        multiselect=True,
+        value=value,
+    )
+
+
+def setup_transfer_event(
+    btn: gr.Button,
+    transfer: gr.Dropdown,
+    output: gr.Audio,
+    input_configs: Sequence[AudioConfig],
+) -> Dependency:
+    """
+    Set up a transfer track event for a button component.
+
+
+    Parameters
+    ----------
+    btn : gr.Button
+        The button to set up the event for.
+    transfer : gr.Dropdown
+        A dropdown component containing transfer options.
+    output : gr.Audio
+        An audio component containing the track to transfer.
+    input_configs : Sequence[AudioConfig]
+        A sequence of configurations for all input audio components
+        that can be transferred to.
+
+    Returns
+    -------
+    Dependency
+        The event listener for the button click.
+
+
+    """
+    return btn.click(
+        partial(update_audio, len(input_configs)),
+        inputs=[transfer, output],
+        outputs=[c.instance for c in input_configs],
+        show_progress="hidden",
+    )
+
+
+def setup_delete_event(
+    button: gr.Button,
+    fn: Callable[..., None],
+    inputs: list[Component],
+    outputs: gr.Textbox,
+    confirm_msg: str,
+    success_msg: str,
+) -> Dependency:
+    """
+    Set up a delete event for a button component.
+
+    Parameters
+    ----------
+    button : gr.Button
+        Button component to set up the delete event for.
+    fn : Callable[..., None]
+        Function to call when the button is clicked.
+    inputs : list[Component]
+        List of input components to pass to the function that is called
+        when the button is clicked.
+    outputs : gr.Textbox
+        Textbox component to update with a success message upon
+        successful deletion.
+    confirm_msg : str
+        Message to display in a confirmation box before executing the
+        delete event.
+    success_msg : str
+        Message to display in the provided textbox component upon
+        successful deletion.
+
+
+    Returns
+    -------
+    Dependency
+        A dependency that can be used for sequencing the delete
+        event with other events.
+
+    """
+    return button.click(
+        confirmation_harness(fn),
+        inputs=inputs,
+        outputs=outputs,
+        js=confirm_box_js(confirm_msg),
+    ).success(partial(render_msg, success_msg), outputs=outputs, show_progress="hidden")
+
+
+def save_total_config(
+    name: str,
+    *values: *tuple[Any, ...],
+    total_config: TotalConfig,
+) -> None:
+    """
+    Save the provided total configuration model to a JSON file
+    after updating each of its nested component configurations
+    with the corresponding provided value.
+
+    Parameters
+    ----------
+    name : str
+        The name of the JSON file to save the provided configuration to.
+    *values : *tuple[Any, ...]
+        The values to update each of the nested component configurations
+        in the provided total configuration model with.
+
+    total_config : TotalConfig
+        The total component configuration model to save.
+
+    """
+    total_config.update_all(*values)
+    save_config(name, total_config)
+
+
+def update_total_config(name: str, total_config: TotalConfig) -> tuple[Any, ...]:
+    """
+    Update each component configuration nested in the provided total
+    configuration model with the corresponding default value
+    from a configuration loaded from a JSON file with the provided name.
+
+    Parameters
+    ----------
+    name : str
+        The name of the configuration to load.
+    total_config : TotalConfig
+        The total component configuration model to update.
+
+    Returns
+    -------
+    tuple[Any, ...]
+        The values of the updated component configurations.
+
+    """
+    new_config = load_config(name, TotalConfig)
+    values = tuple(c.value for c in new_config.all)
+    total_config.update_all(*values)
+    return values

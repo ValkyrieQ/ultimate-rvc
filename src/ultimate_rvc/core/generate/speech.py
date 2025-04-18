@@ -438,6 +438,7 @@ def mix_speech(
         The path to the mixed audio track.
 
     """
+    SPEECH_DIR.mkdir(parents=True, exist_ok=True)
     mixed_audio_track = mix_audio(
         audio_track_gain_pairs=[(speech_track, output_gain)],
         directory=SPEECH_DIR,

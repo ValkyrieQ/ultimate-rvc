@@ -23,44 +23,6 @@
 
 ## Web
 
-### Modularization
-
-* Improve modularization of web code using helper functions defined [here](https://huggingface.co/spaces/WoWoWoWololo/wrapping-layouts/blob/main/app.py)
-* Split front-end modules into further sub-modules.
-  * Structure of web folder should be:
-    * `web`
-      * `manage_models`
-        * `__init__.py`
-        * `main.py`
-      * `manage_audio`
-        * `__init__.py`
-        * `main.py`
-      * `generate_song_covers`
-        * `__init__.py`
-        * `main.py`
-        * `one_click_generation`
-          * `__init__.py`
-          * `main.py`
-          * `accordions`
-            * `__init__.py`
-            * `options_x.py` ... ?
-        * `multi_step_generation`
-          * `__init__.py`
-          * `main.py`
-          * `accordions`
-            * `__init__.py`
-            * `step_X.py` ...
-      * `common.py`
-    * For `multi_step_generation/step_X.py`, its potential render function might have to take the set of all "input tracks" in the multi-step generation tab, so these will then have to be defined in `multi_step_generation/main.py`. Other components passed to `multi_step_generation/main.py` might also need to be passed further down to `multi_step_generation/step_X.py`
-    * For `one_click_generation/option_X.py`, its potential render function should
-        render the accordion for the given options and return the components defined in the accordion? Other components passed to `one_click_generation/main.py` might also need to be passed further down to `one_click_generation/option_X.py`
-  * Import components instead of passing them as inputs to render functions (DIFFICULT TO IMPLEMENT)
-    * We have had problems before with component ids when components are instantiated outside a Blocks context in a separate module and then import into other modules and rendered in their blocks contexts.
-  
-* Should probably refactor web.main as it is getting too big with all the definitions
-  * The same for the number of arguments to the manage models and manage audio tabs render functions
-    * we can combine similar input params into lists like we have done with song_dirs before?
-
 ### Multi-step generation
 
 * If possible merge two consecutive event listeners using `update_cached_songs` in the song retrieval accordion.

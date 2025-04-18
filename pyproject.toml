@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = "==3.12.*"
 dependencies = [
     #Validation
-    "pydantic==2.10.6",
+    "pydantic==2.11.3",
     "lazy-loader==0.4.0",
 
     # CLI
@@ -27,7 +27,7 @@ dependencies = [
     "scipy==1.15.2",
     "matplotlib==3.10.1",
     "tqdm==4.67.1",
-    "gradio==5.23.0",
+    "gradio==5.24.0",
     
     # Machine learning
     "torchcrepe==0.0.23",
