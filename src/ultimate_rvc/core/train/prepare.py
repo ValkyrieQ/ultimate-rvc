@@ -72,7 +72,7 @@ def populate_dataset(name: str, audio_files: Sequence[StrPath]) -> Path:
     if not audio_files:
         raise NotProvidedError(Entity.FILES, ui_msg=UIMessage.NO_UPLOADED_FILES)
 
-    static_ffmpeg.add_paths()
+    static_ffmpeg.add_paths(weak=True)
 
     import pydub.utils as pydub_utils  # noqa: PLC0415
 

@@ -144,7 +144,7 @@ def wavify(
         track if it is not in one of the accepted formats.
 
     """
-    static_ffmpeg.add_paths()
+    static_ffmpeg.add_paths(weak=True)
 
     audio_path = validate_audio_file_exists(audio_track, Entity.AUDIO_TRACK)
     dir_path = validate_audio_dir_exists(directory, Entity.DIRECTORY)
@@ -490,7 +490,7 @@ def _mix_audio(
         The audio format of the mixed audio.
 
     """
-    static_ffmpeg.add_paths()
+    static_ffmpeg.add_paths(weak=True)
     # NOTE The lazy_import function does not work with pydub
     # so we import it here manually
     import pydub  # noqa: PLC0415

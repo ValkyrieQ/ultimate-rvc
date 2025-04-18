@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ultimate-rvc"
-version = "0.4.10"
+version = "0.5.1"
 description = "Ultimate RVC"
 readme = "README.md"
 requires-python = "==3.12.*"
@@ -43,8 +43,8 @@ dependencies = [
     "torch-tb-profiler==0.4.3",
     
     # Audio
-    "static-ffmpeg==2.12",
-    "static-sox==1.0.1",
+    "static-ffmpeg==2.13",
+    "static-sox==1.0.2",
     "typed-ffmpeg==2.6.2",
     "soundfile==0.13.1",
     "librosa==0.10.2",

@@ -56,7 +56,7 @@ def initialize() -> None:
     if not FLAG_FILE.is_file():
         # NOTE we only add_paths so that sox
         # binaries are downloaded as part of initialization.
-        static_sox.add_paths()
+        static_sox.add_paths(weak=True)
         download_sample_models()
         initialize_audio_separator()
         FLAG_FILE.touch()

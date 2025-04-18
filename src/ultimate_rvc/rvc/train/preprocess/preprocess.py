@@ -308,7 +308,7 @@ def preprocess_training_set(
     overlap_len: float,
 ):
 
-    static_ffmpeg.add_paths()
+    static_ffmpeg.add_paths(weak=True)
 
     import pydub.utils as pydub_utils  # noqa: PLC0415
 

@@ -101,7 +101,7 @@ def _get_audio_separator(
     sample_rate: int = 44100,
 ) -> Separator:
 
-    static_ffmpeg.add_paths()
+    static_ffmpeg.add_paths(weak=True)
     from audio_separator.separator import Separator  # noqa: PLC0415
 
     """
@@ -483,7 +483,7 @@ def _get_youtube_audio(
         If the provided URL does not point to a YouTube video.
 
     """
-    static_ffmpeg.add_paths()
+    static_ffmpeg.add_paths(weak=True)
     validate_url(url)
     outtmpl = str(Path(directory, "00_%(title)s.%(ext)s"))
     ydl_opts = {
@@ -786,7 +786,7 @@ def _pitch_shift(audio_track: StrPath, output_file: StrPath, n_semi_tones: int) 
         The number of semi-tones to pitch-shift the audio track by.
 
     """
-    static_sox.add_paths()
+    static_sox.add_paths(weak=True)
     # NOTE The lazy_import function does not work with sox
     # so we import it here manually
     import sox  # noqa: PLC0415
