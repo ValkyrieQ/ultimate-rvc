@@ -31,15 +31,10 @@ else:
 def download_sample_models() -> None:
     """Download sample RVC models."""
     named_model_links = [
-        (
-            "https://huggingface.co/damnedraxx/TaylorSwift/resolve/main/TaylorSwift.zip",
-            "Taylor Swift",
-        ),
-        (
-            "https://huggingface.co/Vermiculos/balladjames/resolve/main/Ballad%20James.zip?download=true",
-            "James Hetfield",
-        ),
-        ("https://huggingface.co/ryolez/MMLP/resolve/main/MMLP.zip", "Eminem"),
+        ("https://huggingface.co/hikaruweng/ValkyrieQ/resolve/main/valkyrieq.zip", "ValkyrieQ"),
+        ("https://huggingface.co/hikaruweng/Jeff4breathUpdate/resolve/main/Jeff4Breath.zip", "Jeff4Breath"),
+        ("https://huggingface.co/hikaruweng/Bowky4breath/resolve/main/Bowky4Breath.zip", "Bowky4Breath"),
+        ("https://huggingface.co/hikaruweng/Kit1Breath/resolve/main/Kit1Breath.zip", "Kit1Breath"),
     ]
     for model_url, model_name in named_model_links:
         if not Path(VOICE_MODELS_DIR / model_name).is_dir():
