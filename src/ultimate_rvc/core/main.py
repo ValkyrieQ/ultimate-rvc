@@ -32,7 +32,7 @@ def download_sample_models() -> None:
     """Download sample RVC models."""
     named_model_links = [
         ("https://huggingface.co/hikaruweng/ValkyrieQ/resolve/main/valkyrieq.zip", "ValkyrieQ"),
-        ("https://huggingface.co/hikaruweng/Jeff4breathUpdate/resolve/main/Jeff4Breath.zip", "Jeff4Breath"),
+        ("https://huggingface.co/hikaruweng/Jeff5NewSongCutSilence/resolve/main/Jeff5NewSongCutSilence.zip", "Jeff5NewSongCutSilence"),
         ("https://huggingface.co/hikaruweng/Bowky4breath/resolve/main/Bowky4Breath.zip", "Bowky4Breath"),
         ("https://huggingface.co/hikaruweng/Kit1Breath/resolve/main/Kit1Breath.zip", "Kit1Breath"),
     ]
