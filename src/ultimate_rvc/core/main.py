@@ -34,6 +34,7 @@ def download_sample_models() -> None:
         ("https://huggingface.co/hikaruweng/ValkyrieQ/resolve/main/valkyrieq.zip", "ValkyrieQ"),
         ("https://huggingface.co/hikaruweng/Jeff5NewSongCutSilence/resolve/main/Jeff5NewSongCutSilence.zip", "Jeff5NewSongCutSilence"),
         ("https://huggingface.co/hikaruweng/Bowky4breath/resolve/main/Bowky4Breath.zip", "Bowky4Breath"),
+        ("https://huggingface.co/hikaruweng/Bowky5CutSilence/resolve/main/Bowky5NoSilence.zip", "Bowky5CutSilence"),
         ("https://huggingface.co/hikaruweng/Kit1Breath/resolve/main/Kit1Breath.zip", "Kit1Breath"),
     ]
     for model_url, model_name in named_model_links:
