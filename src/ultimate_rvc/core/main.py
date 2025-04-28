@@ -36,6 +36,8 @@ def download_sample_models() -> None:
         ("https://huggingface.co/hikaruweng/Bowky4breath/resolve/main/Bowky4Breath.zip", "Bowky4Breath"),
         ("https://huggingface.co/hikaruweng/Bowky5CutSilence/resolve/main/Bowky5NoSilence.zip", "Bowky5CutSilence"),
         ("https://huggingface.co/hikaruweng/Kit1Breath/resolve/main/Kit1Breath.zip", "Kit1Breath"),
+        ("https://huggingface.co/hikaruweng/Prangtip1/resolve/main/Prangtip1.zip", "Prangtip1"),
+        ("https://huggingface.co/hikaruweng/PrangtipBowky1/resolve/main/PrangBowky1.zip", "PrangBowky1"),
     ]
     for model_url, model_name in named_model_links:
         if not Path(VOICE_MODELS_DIR / model_name).is_dir():
