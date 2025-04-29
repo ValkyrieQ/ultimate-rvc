@@ -33,11 +33,20 @@ def download_sample_models() -> None:
     named_model_links = [
         ("https://huggingface.co/hikaruweng/ValkyrieQ/resolve/main/valkyrieq.zip", "ValkyrieQ"),
         ("https://huggingface.co/hikaruweng/Jeff5NewSongCutSilence/resolve/main/Jeff5NewSongCutSilence.zip", "Jeff5NewSongCutSilence"),
-        ("https://huggingface.co/hikaruweng/Bowky4breath/resolve/main/Bowky4Breath.zip", "Bowky4Breath"),
         ("https://huggingface.co/hikaruweng/Bowky5CutSilence/resolve/main/Bowky5NoSilence.zip", "Bowky5CutSilence"),
         ("https://huggingface.co/hikaruweng/Kit1Breath/resolve/main/Kit1Breath.zip", "Kit1Breath"),
         ("https://huggingface.co/hikaruweng/Prangtip1/resolve/main/Prangtip1.zip", "Prangtip1"),
         ("https://huggingface.co/hikaruweng/PrangtipBowky1/resolve/main/PrangBowky1.zip", "PrangBowky1"),
+        ("https://huggingface.co/hikaruweng/Songkran/resolve/main/Songkran.zip", "Songkran"),
+        ("https://huggingface.co/hikaruweng/JoeyPhuwasit/resolve/main/JoeyPhuwasit2.zip", "JoeyPhuwasit"),
+        ("https://huggingface.co/hikaruweng/JaiTaitosmitH/resolve/main/JaiTaitosmitH.zip", "JaiTaitosmitH"),
+        ("https://huggingface.co/hikaruweng/BankClash/resolve/main/BankClash.zip", "BankClash"),
+        ("https://huggingface.co/hikaruweng/Ally/resolve/main/AllyAchiraya.zip", "AllyAchiraya"),
+        ("https://huggingface.co/hikaruweng/NontTanont/resolve/main/NontTanont.zip", "NontTanont"),
+        ("https://huggingface.co/hikaruweng/JengBigAss/resolve/main/JengBigAss.zip", "JengBigAss"),
+        ("https://huggingface.co/hikaruweng/ToonBodyslam/resolve/main/ToonBodyslam.zip", "ToonBodyslam"),
+        ("https://huggingface.co/hikaruweng/TheToys/resolve/main/TheToys.zip", "TheToys"),
+        ("https://huggingface.co/hikaruweng/InkWaruntorn/resolve/main/InkWaruntorn.zip", "InkWaruntorn"),
     ]
     for model_url, model_name in named_model_links:
         if not Path(VOICE_MODELS_DIR / model_name).is_dir():
