@@ -38,7 +38,7 @@ def download_sample_models() -> None:
         ("https://huggingface.co/hikaruweng/Prangtip1/resolve/main/Prangtip1.zip", "Prangtip1"),
         ("https://huggingface.co/hikaruweng/PrangtipBowky1/resolve/main/PrangBowky1.zip", "PrangBowky1"),
         ("https://huggingface.co/hikaruweng/Songkran/resolve/main/Songkran.zip", "Songkran"),
-        ("https://huggingface.co/hikaruweng/JoeyPhuwasit/resolve/main/JoeyPhuwasit2.zip", "JoeyPhuwasit"),
+        ("https://huggingface.co/hikaruweng/JoeyPhuwasit/resolve/main/JoeyPhuwasit.zip", "JoeyPhuwasit"),
         ("https://huggingface.co/hikaruweng/JaiTaitosmitH/resolve/main/JaiTaitosmitH.zip", "JaiTaitosmitH"),
         ("https://huggingface.co/hikaruweng/BankClash/resolve/main/BankClash.zip", "BankClash"),
         ("https://huggingface.co/hikaruweng/Ally/resolve/main/AllyAchiraya.zip", "AllyAchiraya"),
